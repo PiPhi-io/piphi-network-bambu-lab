@@ -23,21 +23,7 @@ CAPABILITIES: dict[str, dict[str, Any]] = {
         "kind": "sensor",
         "unit": "bool"
     },
-    "temperature_c": {
-        "kind": "sensor",
-        "unit": "C"
-    },
     "refresh": {
-        "kind": "action"
-    },
-    "target_state": {
-        "kind": "sensor",
-        "unit": "state"
-    },
-    "set_power": {
-        "kind": "action"
-    },
-    "identify": {
         "kind": "action"
     }
 }
@@ -45,14 +31,6 @@ CAPABILITIES: dict[str, dict[str, Any]] = {
 COMMANDS: dict[str, dict[str, Any]] = {
     "refresh": {
         "description": "Refresh the device state.",
-        "timeout_ms": 5000
-    },
-    "set_power": {
-        "description": "Set actuator power state.",
-        "timeout_ms": 5000
-    },
-    "identify": {
-        "description": "Ask the device to identify itself.",
         "timeout_ms": 5000
     }
 }
@@ -107,26 +85,12 @@ FALLBACK_ENTITY: dict[str, Any] = {
     "entity_type": "sensor",
     "capabilities": [
         "connected",
-        "temperature_c",
-        "refresh",
-        "target_state",
-        "set_power",
-        "identify"
+        "refresh"
     ],
     "available_commands": [
         {
             "id": "refresh",
             "label": "Refresh",
-            "kind": "action"
-        },
-        {
-            "id": "set_power",
-            "label": "Set Power",
-            "kind": "action"
-        },
-        {
-            "id": "identify",
-            "label": "Identify",
             "kind": "action"
         }
     ],

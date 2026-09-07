@@ -29,6 +29,18 @@ The runtime listens on port `4203` by default and exposes the common PiPhi runti
 - `POST /telemetry/device/{config_id}/example`
 - `POST /command`
 
+## Capability coverage
+
+`capability-catalog.json` inventories the reviewed upstream state, events,
+conditions, and actions. Every entry is classified as implemented, planned, or
+excluded with its source, scope, and rationale. Contract tests enforce that
+only implemented entries appear in the manifest, entities, commands, and
+behavior contract.
+
+Model-specific capabilities remain planned until discovery, normalization,
+dispatch, and executable tests exist. This keeps the scaffold honest while
+preserving the complete implementation roadmap.
+
 ## Manifest
 
 `manifest.json` is a starter manifest. Before publishing, update:
