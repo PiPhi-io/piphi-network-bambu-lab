@@ -46,8 +46,11 @@
       "status": 200,
       "body": {
         "id": "demo-device",
-        "host": "127.0.0.1",
-        "alias": "Demo Device"
+        "host": "192.168.1.50",
+        "alias": "Test printer",
+        "serial": "ABC123456",
+        "access_code": "secretcode",
+        "developer_mode_acknowledged": true
       },
       "required_any_keys": [
         [

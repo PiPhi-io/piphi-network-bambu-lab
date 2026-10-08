@@ -1,32 +1,28 @@
 {
   "entities": [
     {
-      "id": "demo-device",
-      "name": "Demo Device",
-      "device_id": "demo-device",
+      "id": "bambu-printer",
+      "name": "Bambu printer",
+      "device_id": "bambu-printer",
       "entity_type": "sensor",
       "capabilities": [
         "connected",
-        "temperature_c",
-        "refresh",
-        "target_state",
-        "set_power",
-        "identify"
+        "simulation_mode",
+        "print_status",
+        "print_progress_percent",
+        "remaining_time_minutes",
+        "current_layer",
+        "total_layers",
+        "nozzle_temperature_c",
+        "target_nozzle_temperature_c",
+        "bed_temperature_c",
+        "target_bed_temperature_c",
+        "refresh"
       ],
       "available_commands": [
         {
           "id": "refresh",
           "label": "Refresh",
-          "kind": "action"
-        },
-        {
-          "id": "set_power",
-          "label": "Set Power",
-          "kind": "action"
-        },
-        {
-          "id": "identify",
-          "label": "Identify",
           "kind": "action"
         }
       ],
@@ -34,47 +30,10 @@
         "allowed_widgets": [
           "tile",
           "stat",
-          "button"
+          "external-widget"
         ],
-        "default_widget": "tile"
+        "default_widget": "external-widget"
       }
     }
-  ],
-  "capabilities": {
-    "connected": {
-      "kind": "sensor",
-      "unit": "bool"
-    },
-    "temperature_c": {
-      "kind": "sensor",
-      "unit": "C"
-    },
-    "refresh": {
-      "kind": "action"
-    },
-    "target_state": {
-      "kind": "sensor",
-      "unit": "state"
-    },
-    "set_power": {
-      "kind": "action"
-    },
-    "identify": {
-      "kind": "action"
-    }
-  },
-  "commands": {
-    "refresh": {
-      "description": "Refresh the device state.",
-      "timeout_ms": 5000
-    },
-    "set_power": {
-      "description": "Set actuator power state.",
-      "timeout_ms": 5000
-    },
-    "identify": {
-      "description": "Ask the device to identify itself.",
-      "timeout_ms": 5000
-    }
-  }
+  ]
 }

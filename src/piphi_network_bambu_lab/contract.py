@@ -23,6 +23,16 @@ CAPABILITIES: dict[str, dict[str, Any]] = {
         "kind": "sensor",
         "unit": "bool"
     },
+    "simulation_mode": {"kind": "sensor", "unit": "bool"},
+    "print_status": {"kind": "sensor"},
+    "print_progress_percent": {"kind": "sensor", "unit": "%"},
+    "remaining_time_minutes": {"kind": "sensor", "unit": "min"},
+    "current_layer": {"kind": "sensor"},
+    "total_layers": {"kind": "sensor"},
+    "nozzle_temperature_c": {"kind": "sensor", "unit": "C"},
+    "target_nozzle_temperature_c": {"kind": "sensor", "unit": "C"},
+    "bed_temperature_c": {"kind": "sensor", "unit": "C"},
+    "target_bed_temperature_c": {"kind": "sensor", "unit": "C"},
     "refresh": {
         "kind": "action"
     }
@@ -30,7 +40,7 @@ CAPABILITIES: dict[str, dict[str, Any]] = {
 
 COMMANDS: dict[str, dict[str, Any]] = {
     "refresh": {
-        "description": "Refresh the device state.",
+        "description": "Request a full printer status at most once every five minutes.",
         "timeout_ms": 5000
     }
 }
@@ -39,26 +49,35 @@ CONFIG_SCHEMA: dict[str, Any] = {
     "schema": {
         "title": "Piphi Network Bambu Lab Setup",
         "type": "object",
-        "required": [
-            "host"
-        ],
+        "required": [],
+        "description": "For a real printer, enter host, serial, LAN access code, and acknowledge Developer Mode. For testing, choose Simulation mode without real credentials.",
         "properties": {
+            "simulation_mode": {
+                "type": "boolean",
+                "title": "Simulated printer (testing only)",
+                "description": "Generates sample print reports for dashboard testing; never contacts a printer."
+            },
             "host": {
                 "type": "string",
-                "title": "Host"
+                "title": "Printer LAN IPv4 address",
+                "description": "A private LAN address; cloud endpoints are not supported."
             },
             "alias": {
                 "type": "string",
                 "title": "Alias"
             },
-            "poll_interval_seconds": {
-                "type": "integer",
-                "title": "Poll Interval Seconds",
-                "minimum": 5
-            },
-            "safety_mode": {
+            "serial": {
                 "type": "string",
-                "title": "Safety Mode"
+                "title": "Printer serial number"
+            },
+            "access_code": {
+                "type": "string",
+                "title": "LAN access code",
+                "format": "password"
+            },
+            "developer_mode_acknowledged": {
+                "type": "boolean",
+                "title": "I enabled Developer Mode on this printer and understand Bambu's security warning"
             }
         }
     },
@@ -67,24 +86,34 @@ CONFIG_SCHEMA: dict[str, Any] = {
             "placeholder": "192.168.1.50"
         },
         "alias": {
-            "placeholder": "Office Device"
+            "placeholder": "Printer"
         },
-        "poll_interval_seconds": {
-            "placeholder": "30"
+        "serial": {
+            "placeholder": "Printer serial"
         },
-        "safety_mode": {
-            "placeholder": "enabled"
+        "access_code": {
+            "ui:widget": "password"
         }
     }
 }
 
 FALLBACK_ENTITY: dict[str, Any] = {
     "id": "demo-device",
-    "name": "Demo Device",
+    "name": "Bambu printer",
     "device_id": "demo-device",
     "entity_type": "sensor",
     "capabilities": [
         "connected",
+        "simulation_mode",
+        "print_status",
+        "print_progress_percent",
+        "remaining_time_minutes",
+        "current_layer",
+        "total_layers",
+        "nozzle_temperature_c",
+        "target_nozzle_temperature_c",
+        "bed_temperature_c",
+        "target_bed_temperature_c",
         "refresh"
     ],
     "available_commands": [
@@ -98,8 +127,8 @@ FALLBACK_ENTITY: dict[str, Any] = {
         "allowed_widgets": [
             "tile",
             "stat",
-            "button"
+            "external-widget"
         ],
-        "default_widget": "tile"
+        "default_widget": "external-widget"
     }
 }
