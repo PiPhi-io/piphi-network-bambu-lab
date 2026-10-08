@@ -3,8 +3,7 @@ from __future__ import annotations
 from fastapi import APIRouter
 from piphi_runtime_kit_python import build_event_ingest_response, build_event_list_response
 
-from ..settings import INTEGRATION_ID
-from ..state import append_runtime_event, get_entry_or_404, registry, runtime
+from ..state import append_runtime_event, get_entry_or_404, registry
 
 router = APIRouter(tags=["events"])
 
@@ -16,12 +15,9 @@ async def events():
 
 @router.post("/events/example")
 async def event_example():
-    entry = registry.primary_entry() or {
-        "device_id": "demo-device",
-        "config_id": "demo-device",
-        "integration_id": INTEGRATION_ID,
-        "container_id": runtime.auth.container_id or None,
-    }
+    entry = registry.primary_entry()
+    if entry is None:
+        return {"ok": False, "reason": "no configured devices"}
     event = append_runtime_event(
         "runtime.event",
         entry,

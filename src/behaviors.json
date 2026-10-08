@@ -4,7 +4,7 @@
     {
       "id": "refresh_on_config_applied",
       "label": "Refresh after configuration",
-      "description": "Refreshes the runtime after a configuration is applied.",
+      "description": "Request a full MQTT report after configuration, subject to the five-minute printer rate limit.",
       "category": "Starter",
       "deviceKey": "piphi_network_bambu_lab_device",
       "config": {
@@ -112,19 +112,29 @@
       },
       "metadata": {
         "generated": true,
-        "recommended": true
+        "recommended": false
       }
     }
   ],
   "devices": [
     {
       "id": "piphi_network_bambu_lab_device",
-      "name": "Piphi Network Bambu Lab",
-      "description": "Automation metadata for Piphi Network Bambu Lab.",
-      "deviceClass": "actuator_device",
+      "name": "Bambu printer",
+      "description": "Read-only printer state from authenticated LAN MQTT reports.",
+      "deviceClass": "sensor_device",
       "entityType": "device",
       "capabilities": [
         "connected",
+        "simulation_mode",
+        "print_status",
+        "print_progress_percent",
+        "remaining_time_minutes",
+        "current_layer",
+        "total_layers",
+        "nozzle_temperature_c",
+        "target_nozzle_temperature_c",
+        "bed_temperature_c",
+        "target_bed_temperature_c",
         "refresh"
       ],
       "targeting": {
@@ -164,7 +174,7 @@
         "staleDataMode": "block"
       },
       "ui": {
-        "icon": "power",
+        "icon": "printer",
         "category": "local-device"
       },
       "triggers": [

@@ -110,14 +110,14 @@ def test_implemented_behavior_events_and_conditions_are_declared() -> None:
 
 
 @pytest.mark.anyio
-async def test_config_apply_emits_the_implemented_behavior_event() -> None:
+async def test_config_apply_emits_the_implemented_behavior_event(mock_mqtt) -> None:
     transport = httpx.ASGITransport(app=app)
     config_id = "capability-catalog-test"
     async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as client:
         try:
             response = await client.post(
                 "/config",
-                json={"id": config_id, "host": "127.0.0.1", "alias": "Coverage Test"},
+                json={"id": config_id, "host": "192.168.1.50", "alias": "Coverage Test", "serial": "ABC123456", "access_code": "secretcode", "developer_mode_acknowledged": True},
             )
             assert response.status_code == 200
             events = (await client.get("/events")).json()["events"]

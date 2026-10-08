@@ -6,7 +6,8 @@
   "sources": {
     "ha_bambulab": "https://github.com/greghesp/ha-bambulab",
     "ha_bambulab_triggers": "https://docs.page/greghesp/ha-bambulab/device-triggers",
-    "core_vocabulary": "PiPhi Network Core and maintained PiPhi integrations"
+    "core_vocabulary": "PiPhi Network Core and maintained PiPhi integrations",
+    "openbambu_mqtt": "https://github.com/Doridian/OpenBambuAPI/blob/main/mqtt.md"
   },
   "groups": [
     {
@@ -14,11 +15,22 @@
       "status": "implemented",
       "scope": ["all-configurations"],
       "source_refs": ["core_vocabulary"],
-      "reason": "The scaffold implements configuration presence, connectivity state, refresh dispatch, and a normalized state-change event.",
-      "state": ["connected"],
+      "reason": "Connection state is derived from an authenticated LAN MQTT session; full refresh is rate-limited to five minutes.",
+      "state": ["connected", "simulation_mode"],
       "events": ["runtime.config.applied"],
       "conditions": ["state_matches"],
       "actions": ["refresh"]
+    },
+    {
+      "id": "read-only-print-monitoring",
+      "status": "implemented",
+      "scope": ["developer-mode-printers-on-private-lan"],
+      "source_refs": ["openbambu_mqtt"],
+      "reason": "Validated print.push_status reports provide current status, progress, time, layers, and one-nozzle/bed temperature measurements without exposing job metadata or printer controls.",
+      "state": ["print_status", "print_progress_percent", "remaining_time_minutes", "current_layer", "total_layers", "nozzle_temperature_c", "target_nozzle_temperature_c", "bed_temperature_c", "target_bed_temperature_c"],
+      "events": [],
+      "conditions": [],
+      "actions": []
     },
     {
       "id": "print-lifecycle",
@@ -26,7 +38,7 @@
       "scope": ["all-supported-printers"],
       "source_refs": ["ha_bambulab", "ha_bambulab_triggers"],
       "reason": "Lifecycle state and commands must be gated by current print state and control authorization.",
-      "state": ["print_status", "print_stage", "print_progress_percent", "current_layer", "total_layers", "remaining_time_minutes", "print_start_time", "print_end_time", "print_file", "print_name", "print_type", "print_weight_g", "print_length_mm", "print_bed_type", "speed_profile", "timelapse_active", "total_usage_hours"],
+      "state": ["print_stage", "print_start_time", "print_end_time", "print_file", "print_name", "print_type", "print_weight_g", "print_length_mm", "print_bed_type", "speed_profile", "timelapse_active", "total_usage_hours"],
       "events": ["print.started", "print.paused", "print.resumed", "print.finished", "print.failed", "print.canceled", "print.error", "print.error_cleared", "printer.error", "printer.error_cleared", "printer.sdcard_missing"],
       "conditions": ["print_status_is", "print_progress_threshold", "layer_threshold", "remaining_time_threshold", "speed_profile_is", "timelapse_is_active"],
       "actions": ["pause_print", "resume_print", "stop_print", "set_print_speed", "start_project_file", "skip_objects"]
@@ -37,7 +49,7 @@
       "scope": ["feature-supported-printers"],
       "source_refs": ["ha_bambulab"],
       "reason": "Nozzle count, chamber heating, fan count, heatbed lighting, and airduct control vary by printer model.",
-      "state": ["nozzle_temperature_c", "target_nozzle_temperature_c", "left_nozzle_temperature_c", "left_target_nozzle_temperature_c", "right_nozzle_temperature_c", "right_target_nozzle_temperature_c", "bed_temperature_c", "target_bed_temperature_c", "chamber_temperature_c", "target_chamber_temperature_c", "cooling_fan_percent", "aux_fan_percent", "secondary_aux_fan_percent", "chamber_fan_percent", "heatbreak_fan_percent", "airduct_mode", "chamber_light_on", "heatbed_light_on"],
+      "state": ["left_nozzle_temperature_c", "left_target_nozzle_temperature_c", "right_nozzle_temperature_c", "right_target_nozzle_temperature_c", "chamber_temperature_c", "target_chamber_temperature_c", "cooling_fan_percent", "aux_fan_percent", "secondary_aux_fan_percent", "chamber_fan_percent", "heatbreak_fan_percent", "airduct_mode", "chamber_light_on", "heatbed_light_on"],
       "events": ["temperature.threshold_crossed", "fan.changed", "light.changed"],
       "conditions": ["nozzle_temperature_threshold", "bed_temperature_threshold", "chamber_temperature_threshold", "fan_speed_threshold", "light_is_on", "airduct_mode_is"],
       "actions": ["set_nozzle_temperature", "set_bed_temperature", "set_chamber_temperature", "set_fan_speed", "set_airduct_mode", "set_chamber_light", "set_heatbed_light"]
